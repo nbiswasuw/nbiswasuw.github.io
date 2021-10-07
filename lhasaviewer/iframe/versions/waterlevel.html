@@ -1,0 +1,279 @@
+<html>
+
+<!--- LIS Atlas: Dynamic web based framework for visualization of LIS Output
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ // Timeseries plotting of Basin average parameters
+ // Written by Nishan Kumar Biswas
+ // PhD Student and Graduate Research Assistant
+ // Department of CEE, University of Washington
+ // nbiswas@uw.edu, nishan.wre.buet@gmail.com
+ // www.students.washington.edu/nbiswas
+
+-->
+
+<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-155979083-3"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-155979083-3');
+		</script>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+<script>
+    function getParamValue(paramName) {
+        var url = window.location.search.substring(1); //get rid of "?" in querystring
+        var qArray = url.split('&'); //get key-value pairs
+        for (var i = 0; i < qArray.length; i++) {
+            var pArr = qArray[i].split('='); //split key and value
+            if (pArr[0] == paramName)
+                return pArr[1]; //return value
+        }
+    }
+
+</script>
+
+
+<script type="text/javascript">
+ var station = getParamValue("station");
+
+ var stations = ["amalshid","bhairabbazar","kanaighat","sarighat","sheola","habiganj","manu-rb","moulvibazar","sherpur","sylhet","jariajanjail","sunamganj","durgapur","nokuagaon","lourergarh","ballah","kamalganj","markuli","khaliajuri", "derai", "fenchuganj", "azmiriganj", "islampur", "muslimpur", "kalmakanda", "sutang-rb", "gowainghat", "bijoypur", "lubachara", "jafflong", "brahmanbaria"]
+ var stationtitles = ['Amalshid','Bhairab Bazar','Kanairghat','Sarighat','Sheola','Habiganj','Manu Railway Bridge','Moulvibazar','Sherpur','Sylhet','Jariajanjail','Sunamganj','Durgapur','Nakuagaon','Laurergorh','Ballah','Kamalganj','Markuli','Khaliajuri', "Derai", "Fenchuganj", "Azmiriganj", "Islampur", "Muslimpur", "Kalmakanda", "Sutang Railway Bridge", "Gowainghat", "Bijoypur", "Lubachara", "Jafflong","Brahmanbaria"]
+ var rivernames = ['Kushiyara','Meghna','Surma','Sarigowain','Kushiyara','Kushiyara','Manu','Manu','Kushiyara','Surma','Kangsha','Surma','Someswari','Bhugai','Jadukata','Khowai','Dhalai','Surma-Meghna','Dhanu', 'Old Surma','Kushiyara','Kalni','Dhalagang','Jhalukhati','Someswari','Sutang','Sarigowain','Someswari','Lubachara','Piyain','Titas'];
+ var dls = [13.05, 5.80, 10.9, 10.7, 10.7, 8.65, 16.45, 9.55, 7.8, 8.3, 6.35, 6.05, 10.8, 20.8, 5.95, 21.20, 19.05, 5.95, 4.15, 6.55, 7.75, 4.55, 10.25, 6.45, 4.9, 4.95, 8.65, 15.0, 20.0, 15.0, 5.05]
+ 
+ var rivername = rivernames[stations.indexOf(station)];
+ var stationtitle = stationtitles[stations.indexOf(station)];
+ var unit = 'm MSL';
+ var title = stationtitles[stations.indexOf(station)];
+ var regiontitle = rivernames[stations.indexOf(station)];
+ var dangerl = dls[stations.indexOf(station)]
+ console.log(dangerl);
+function retrieveclim()
+{
+	dataset = '';
+	// AJAX in the data file
+    $.ajax({
+        type: "GET",
+        url: "data/station/clim/" + station + ".txt",
+		async: false,
+        dataType: "text",
+        success: function(data)
+		{
+		  dataset=String(data);
+		}
+        });
+		return dataset;
+}
+
+function retrievegfs()
+{
+	dataset = '';
+	// AJAX in the data file
+    $.ajax({
+        type: "GET",
+        url: "data/station/wrf/" + station + ".txt",
+		async: false,
+        dataType: "text",
+        success: function(data)
+		{
+		  dataset=String(data);
+		}
+        });
+		return dataset;
+}
+function retrieveecmwf()
+{
+	dataset = '';
+	// AJAX in the data file
+    $.ajax({
+        type: "GET",
+        url: "data/station/ecmwf/" + station + ".txt",
+		async: false,
+        dataType: "text",
+        success: function(data)
+		{
+		  dataset=String(data);
+		}
+        });
+		return dataset;
+}
+
+function load()
+{
+	var ranges = [],
+	averages = [],
+	current = [],
+	forecastgfs = [],
+	forecastecmwf = [];
+	climdata = retrieveclim();
+	lines = climdata.split('\n');
+	for (i = 0; i < lines.length; i++) {
+	var items = lines[i].split(',');
+	ranges.push([new Date(items[0]).getTime(), +items[1], +items[2]]);
+	averages.push([new Date(items[0]).getTime(), +items[3]]);
+	}
+	
+	gfsdata = retrievegfs();
+	lines = gfsdata.split('\n');
+	for (i = 1; i < lines.length; i++) {
+	var items = lines[i].split(',');
+	if (items[1]!=""){
+		current.push([new Date(items[0]).getTime(), +items[1]]);	
+	}
+	if (items[2]!=""){
+		forecastgfs.push([new Date(items[0]).getTime(), +items[2]]);
+	}
+	}
+
+	ecmwfdata = retrieveecmwf();
+	lines = ecmwfdata.split('\n');
+	for (i = 1; i < lines.length; i++) {
+	var items = lines[i].split(',');
+	if (items[2]!=""){
+		forecastecmwf.push([new Date(items[0]).getTime(), +items[2]]);
+	}
+	}
+	
+	Highcharts.setOptions({
+	   global: {
+		  useUTC: false
+	   }
+	});
+	var chart = Highcharts.chart('container', {
+	chart: {
+			zoomType: 'xy',
+			panning: true,
+			panKey: 'shift'
+		},
+	title: {
+	  text: title
+	},
+	subtitle: {
+	  text: regiontitle + " River"
+	},
+	xAxis: {
+	  type: 'datetime'
+	},
+	yAxis: {
+	  title: {
+		text: 'WL (' + unit + ')'
+	  },
+      plotLines: [{
+        color: 'red',
+        width: 2,
+		dashStyle: 'longdash',
+        value: dangerl,
+		label: {
+                    text: 'Danger Level'
+                }
+      }],
+	  labels: {
+        format: '{value:.2f}'
+	  },
+	  minTickInterval: 0.01,
+	  max: dangerl
+	},
+	tooltip: {
+	  crosshairs: true,
+	  shared: true,
+	  valueSuffix: " " + unit
+	},
+	legend: {},
+	series: [{
+	  name: 'Nowcast',
+	  data: current,
+	  type: 'spline',
+	  color:'green',
+	  zIndex: 1,
+	  marker: {
+		enabled: false
+	  }
+	},{
+	  name: 'WRF Forecast',
+	  data: forecastgfs,
+	  type: 'spline',
+	  color:'red',
+	  zIndex: 2,
+	  marker: {
+		enabled: false
+	  }
+	},{
+	  name: 'ECMWF Forecast',
+	  data: forecastecmwf,
+	  type: 'spline',
+	  color:'blue',
+	  zIndex: 1,
+	  marker: {
+		enabled: false
+	  }
+	},{
+	  name: 'Average',
+	  data: averages,
+	  color:'gray',
+	  lineWidth: 1,
+	  dashStyle: 'longdash',
+	  zIndex: 4,
+	  marker: {
+		enabled: false
+	  },
+	  visible: false
+	}, {
+	  name: 'Climatology',
+	  data: ranges,
+	  type: 'arearange',
+	  lineWidth: 0,
+	  color: Highcharts.getOptions().colors[0],
+	  fillOpacity: 0.3,
+	  zIndex: 0,
+	  marker: {
+		enabled: false
+	  },
+	  visible: false,
+	  redraw: true
+	}]
+	});
+
+}
+</script>
+<style>
+.selector {
+	position: absolute;
+	right: 20px;
+	top: 368px;
+}
+.errormessage {
+	position: absolute;
+	width:200px;
+	left:50%;
+	margin-left:-100px;
+	top: 60px;
+    color: red;
+    padding: 20px;
+    font-size: 20px;
+    border: 2px;
+    cursor: pointer;
+}
+.selectyear {
+    background-color: #444244;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px;
+    cursor: pointer;
+}
+
+</style>
+</head>
+<body onload="load()">
+<div id="container" style="width: 100%; height: 400px; margin: 0 auto"></div>
+</body>

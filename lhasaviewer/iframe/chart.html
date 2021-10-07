@@ -1,0 +1,262 @@
+<html>
+
+<!--- LIS Atlas: Dynamic web based framework for visualization of LIS Output
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ // Timeseries plotting of Basin average parameters
+ // Written by Nishan Kumar Biswas
+ // PhD Student and Graduate Research Assistant
+ // Department of CEE, University of Washington
+ // nbiswas@uw.edu, nishan.wre.buet@gmail.com
+ // www.students.washington.edu/nbiswas
+
+-->
+
+<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-155979083-3"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-155979083-3');
+		</script>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+<script>
+    function getParamValue(paramName) {
+        var url = window.location.search.substring(1); //get rid of "?" in querystring
+        var qArray = url.split('&'); //get key-value pairs
+        for (var i = 0; i < qArray.length; i++) {
+            var pArr = qArray[i].split('='); //split key and value
+            if (pArr[0] == paramName)
+                return pArr[1]; //return value
+        }
+    }
+
+</script>
+
+
+<script type="text/javascript">
+ var id = getParamValue("nameid");
+ var admin1 = getParamValue("adminid");
+ var countryid = getParamValue("country");
+
+function currentprecip()
+{
+	dataset = '';
+	// AJAX in the data file
+    $.ajax({
+        type: "GET",
+        url: "data/pcurrent.csv",
+		async: false,
+        dataType: "text",
+        success: function(data)
+		{
+		  dataset=String(data);
+		}
+        });
+		return dataset;
+}
+
+function antecedentprecip()
+{
+	dataset = '';
+	// AJAX in the data file
+    $.ajax({
+        type: "GET",
+        url: "data/pantecedent.csv",
+		async: false,
+        dataType: "text",
+        success: function(data)
+		{
+		  dataset=String(data);
+		}
+        });
+		return dataset;
+}
+function hazardp()
+{
+	dataset = '';
+	// AJAX in the data file
+    $.ajax({
+        type: "GET",
+        url: "data/phazard.csv",
+		async: false,
+        dataType: "text",
+        success: function(data)
+		{
+		  dataset=String(data);
+		}
+        });
+		return dataset;
+}
+
+function load()
+{
+	var mean_current = [],
+	mean_antecedent = [],
+	mean_probability = [],
+	probability_ranges = []
+	
+	currentpdata = currentprecip();
+	lines = currentpdata.split('\n');
+	for (i = 1; i < lines.length; i++) {
+	var items = lines[i].split(',');
+	if (items[0]==id){
+	  mean_current.push([new Date(items[1]).getTime(), +items[3]]);
+	  }
+	}
+	antepdata = antecedentprecip();
+	lines = antepdata.split('\n');
+	for (i = 1; i < lines.length; i++) {
+	var items = lines[i].split(',');
+	if (items[0]==id){
+	  mean_antecedent.push([new Date(items[1]).getTime(), +items[3]]);
+	  }
+	}
+
+	hazardpdata = hazardp();
+	lines = hazardpdata.split('\n');
+	for (i = 1; i < lines.length; i++) {
+	var items = lines[i].split(',');
+	if (items[0]==id){
+	  mean_probability.push([new Date(items[1]).getTime(), +items[4]]);
+	  probability_ranges.push([new Date(items[1]).getTime(),+items[3], +items[4]]);
+	  }
+	}
+	
+	Highcharts.setOptions({
+	   global: {
+		  useUTC: false
+	   }
+	});
+	var chart = Highcharts.chart('container', {
+	chart: {
+			zoomType: 'xy',
+			panning: true,
+			panKey: 'shift',
+			events: {
+				load: function () {
+				  xmin = mean_current[0][0];
+				  xmax = mean_current[mean_current.length-1][0];
+				  this.xAxis[0].setExtremes(xmin, xmax)
+				}
+			}
+		},
+	title: {
+	  text: 'Plot for '+ admin1
+	},
+	subtitle: {
+	  text: 'Country: ' + countryid
+	},
+	xAxis: {
+	  type: 'datetime'
+	},
+	yAxis: [{
+	  title: {
+		text: 'Precipitation (mm)'
+	  },
+	  labels: {
+        format: '{value:.0f}'
+	  },
+	  minTickInterval: 0.01,
+	},
+	{
+	  title: {
+		text: 'Probability'
+	  },
+	  labels: {
+        format: '{value:.2f}'
+	  },
+	  minTickInterval: 0.01,
+	  opposite: true
+	}],
+	tooltip: {
+	  crosshairs: true,
+	  shared: true,
+	},
+	legend: {},
+	series: [{
+	  name: 'Current Precip',
+	  data: mean_current,
+	  type: 'column',
+	  color:'green',
+	  zIndex: 4,
+	  valueSuffix: " mm",
+	  marker: {
+		enabled: false
+	  }
+	},{
+	  name: 'Antecedent Precip',
+	  data: mean_antecedent,
+	  type: 'column',
+	  color:'blue',
+	  zIndex: 3,
+	  valueSuffix: " mm",
+	  marker: {
+		enabled: false
+	  }
+	},{
+	  name: 'Hazard Probability',
+	  data: mean_probability,
+	  type: 'spline',
+	  color:'red',
+	  zIndex: 2,
+	  yAxis: 1,
+	  marker: {
+		enabled: false
+	  }
+	},{
+	  name: 'Hazard Probability Range',
+	  data: probability_ranges,
+	  type: 'arearange',
+	  color:'cyan',
+	  zIndex: 1,
+	  yAxis: 1,
+	  marker: {
+		enabled: false
+	  }
+	}]
+	});
+
+}
+</script>
+<style>
+.selector {
+	position: absolute;
+	right: 20px;
+	top: 368px;
+}
+.errormessage {
+	position: absolute;
+	width:200px;
+	left:50%;
+	margin-left:-100px;
+	top: 60px;
+    color: red;
+    padding: 20px;
+    font-size: 20px;
+    border: 2px;
+    cursor: pointer;
+}
+.selectyear {
+    background-color: #444244;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px;
+    cursor: pointer;
+}
+
+</style>
+</head>
+<body onload="load()">
+<div id="container" style="width: 100%; height: 400px; margin: 0 auto"></div>
+</body>

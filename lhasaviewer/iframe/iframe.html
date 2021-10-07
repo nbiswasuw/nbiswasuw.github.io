@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+		<title>LHASA Dynamic Visualizer</title>
+
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="css/skel.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-155979083-3"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-155979083-3');
+		</script>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y2Q9YYM5Z7"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'G-Y2Q9YYM5Z7');
+		</script>
+		<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" type="text/css">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
+		<link rel="stylesheet" href="https://rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css"/>
+		<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+		<script src="js/jquery.min.js"></script>
+
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>			
+		 <link rel="stylesheet" href="css/leaflet.fullscreen.css" />
+		 <script src="js/Leaflet.fullscreen.js"></script>
+		 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+		<script src="https://momentjs.com/downloads/moment.min.js"></script>
+		<!--<script src="https://unpkg.com/geotiff@0.4.1/dist/main.js"></script> -->
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+
+		
+		<script src="https://unpkg.com/d3-array@1"></script>
+		<script src="https://unpkg.com/d3-contour@1"></script>
+		<script src="https://unpkg.com/d3-collection@1"></script>
+		<script src="https://unpkg.com/d3-color@1"></script>
+		<script src="https://unpkg.com/d3-dispatch@1"></script>
+		<script src="https://unpkg.com/d3-geo@1"></script>
+		<script src="https://unpkg.com/d3-interpolate@1"></script>
+		<script src="https://unpkg.com/d3-request@1"></script>
+		<script src="https://unpkg.com/d3-selection@1"></script>
+		<script src="https://unpkg.com/d3-scale@1"></script>
+		<script src="https://unpkg.com/geotiff@0.4/dist/geotiff.browserify.min.js"></script>
+		<script src="js/L.CanvasLayer.Field.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/1.3.0/chroma.min.js"></script>
+		
+		<style>
+		html, body {
+			height: 700px;
+			margin: 0;
+		}
+		#map {
+			width: 100%;
+			height: 650px;
+		}
+
+		
+		.legend {
+			line-height: 18px;
+			color: #333333;
+			font-family: 'Open Sans', Helvetica, sans-serif;
+			padding: 6px 8px;
+			background: white;
+			background: rgba(255, 255, 255, 0.8);
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+			border-radius: 5px;
+		}
+
+		.legend i {
+			width: 18px;
+			height: 18px;
+			float: left;
+			margin-right: 8px;
+			opacity: 0.7;
+		}
+
+		.legend img {
+			width: 220px;
+			height: auto;
+			float: left;
+		}
+
+		.legend p {
+			font-size: 12px;
+			line-height: 18px;
+			margin: 0;
+		}
+		</style>
+		
+	</head>
+	<body onload="initialize()">
+			<!-- Main -->
+		<section id="main" class="wrapper" style="padding: 0em 0em 0em">
+		
+		<div class="row">	
+			<div class="6u 12u$(3)">
+				<ul class="actions fit">
+				<li>
+					<div class="select-wrapper">
+						<select name="foreproduct" id="foreproduct">
+							<option value="-1">- Model -</option>
+							<option value="hazard"  selected='selected'>Nowcast</option>
+							<option value="exposure">Forecast </option>
+						</select>
+					</div>
+				</li>
+				<li>
+					<div class="select-wrapper">
+						<select name="visparam" id="visparam">
+							<option value="-1">- Visualization Parameter -</option>
+							<option value="hazard"  selected='selected'>Hazard</option>
+							<option value="exposure">Exposure</option>
+							<option value="current">1-Day Precipitation</option>
+							<option value="antecedent">3-Day Precipitation</option>
+							<option value="sm">Soil Moisture Condition</option>
+						</select>
+					</div>
+				</li>
+				</ul>
+			</div>
+			<div class="6u 12u$(2)">
+				<ul class="actions fit">
+				
+				<li>
+				<input class="seldate" type="date" id="seldate" name="seldate" value="" onchange="notifychange()" style="position: relative; z-index: 100000;">
+
+					<!--  date picker for Safari/Firefox -->
+
+					<script>
+						(function() {
+							var elem = document.createElement('input');
+							elem.setAttribute('type', 'date');
+
+							if (elem.type === 'text') {
+								$('#seldate').datepicker({
+									dateFormat: 'yy-mm-dd'
+								});
+							}
+						})();
+					</script>
+
+					<div class='hidePrint' style="display:inline;">
+						<div id="changeOne" style="display:inline;">
+							<button class="button buttonL" type="reset" title="Step Back 1 Day" onclick="decreaseDate();">
+								<i class="fa fa-minus" aria-hidden="true"></i>
+							</button>
+
+							<button class="button buttonR" type="reset" title="Step Forward 1 Day " onclick="increaseDate();">
+								<i class="fa fa-plus" aria-hidden="true"></i>
+							</button>
+						</div>
+					</div>				
+				</li>
+				<li>
+					<div id="anim" style="display:inline;">
+							<button class="button buttonL" id="btback" title="Play Animation Backwards" type="reset" onclick="playback();">
+								<i class="fa fa-backward" aria-hidden="true"></i>
+							</button>
+							<button class="button buttonC" id="btpause" title="Pause Animation" type="reset" disabled="true" onclick="playstop();">
+								<i class="fa fa-pause" aria-hidden="true"></i>
+							</button>
+							<button class="button buttonR" id="btforward" title="Play Animation Forwards" type="reset" onclick="playforward();">
+								<i class="fa fa-forward" aria-hidden="true"></i>
+							</button>
+						</div>				
+				</li>
+				</ul>
+			</div>
+		</div>
+		<div id='map'></div>
+		</section>
+		
+		<script src="js/lmr_admin1.geojson"></script>
+		<script src="js/lmr_countries.geojson"></script>
+		<script src="js/haors.geojson"></script>
+		<script src="js/leaflet-panel-layers.js"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+		<script src="js/slidercontrol.js"></script>
+		<script src="https://momentjs.com/downloads/moment.min.js"></script>
+
+		<script>		
+			// Defining static layers
+			var basinbndstyle = {"color": "#ff7800", "weight": 5, "opacity": 0.75};
+			var basinextent = L.geoJSON(countries_lmr, {
+			  style: basinbndstyle,
+			  onEachFeature: function (feature, layer) {
+				layer.bindTooltip(feature.properties.COUNTRY);
+			  }
+		    });
+			var haorstyle = {"color": "#ff7800", "weight": 2, "opacity": 0.8};
+			var haors = L.geoJSON(admin1_lmr, {
+			  style: haorstyle,
+			  onEachFeature: function (feature, layer) {
+				layer.bindTooltip(feature.properties.NAME_1);
+				var adminid = feature.properties.NAME_1;
+				var country = feature.properties.NAME_0;
+				var nameid = feature.properties.FID;
+				var content = '<iframe id="iframe" width="700" height="520" src="chart.html?adminid=&country=&nameid=" frameborder="0"></iframe>';
+				var popupContent = content.replace("adminid=", "adminid=" + adminid).replace("country=", "country=" + country).replace("nameid=", "nameid=" + nameid);
+				console.log(popupContent)
+				layer.bindPopup(popupContent);
+			  }
+			});
+			<!---var rivstyle = {"color": "#4262f4", "weight": 2, "opacity": 0.65};
+			<!---var rivers = L.geoJSON(rivernetwork, {style: rivstyle});
+						
+			var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}', {
+				attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+				subdomains: 'abcd',
+				minZoom: 0,
+				maxZoom: 18,
+				ext: 'png'
+			});
+			
+			var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+				attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+			});
+			
+			var Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+				attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+				maxZoom: 16
+			});
+			var Thunderforest_Landscape = L.tileLayer('https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=33cde94253dc46b0a4945dd1b82ec5c6', {
+				attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+				apikey: '<your apikey>',
+				maxZoom: 22
+			});
+			var map = L.map('map', {
+				center: [15.5, 100.2],
+				zoom: 5,
+				layers: [Esri_WorldImagery, haors],
+				zoomControl: false
+			});
+			
+			var baseLayers = {
+				"Terrain Map":Stamen_Terrain,
+				"Imagery Map":Esri_WorldImagery,
+				"Geo Map":Esri_NatGeoWorldMap,
+				"Landscape Map": Thunderforest_Landscape
+			};
+
+			var overlays = {
+				"Lower Mekong Region": basinextent,
+				"Country Boundaries": basinextent,
+				"Admin level 1 Boundaries": haors,
+				"Susceptibility Map":basinextent,
+				"Observed Landslides":basinextent,
+			};
+
+			L.control.layers(baseLayers,{}, {position: "bottomright"}).addTo(map);
+			L.control.layers({},overlays, {
+				position: 'topright',
+				collapsed: false
+			}).addTo(map);
+			
+			var scale = L.control.scale({
+				position:'bottomleft'
+			}).addTo(map);
+			
+			var elegend = L.control({
+				position: 'topleft'
+			});
+			var overlayLayer;
+			
+			function initialize(){
+				var datep = document.getElementById('seldate')
+				var date = moment();
+				var local = moment(date).local().format('YYYY-MM-DD');
+				console.log(local)
+				datep.value = local
+
+				$('#seldate').datepicker('setDate', '-1');
+				var curdate = new Date(document.getElementById('seldate').value);
+				var prdate = moment(curdate).format('YYYY-MM-DD');
+				var strdate = moment(curdate).format('YYYYMMDD');
+				var imgdate = moment(curdate).format('MMM DD YYYY 06:00')
+					
+				var flooddata = 'data/hazard/hazard_img_' + strdate + '.png';
+				var floodbounds = [[5.208393, 92.1833], [28.550060, 109.4666667]];
+				var overlayLayer = L.imageOverlay(flooddata, floodbounds, {opacity: 1.0});
+				overlayLayer.addTo(map);
+
+				elegend.onAdd = function(map) {
+					var div = L.DomUtil.create('div', 'legend');
+					div.innerHTML += '<center><font size="2" color="black">Hazard Probability of <b>' + imgdate + '</b></font></center>';
+					div.innerHTML += '<img src="img/waterlevel.png" /><br>';
+					div.innerHTML += '<center><br>Based on Nowcast LHASA Mekong</center>';
+					
+					return div;
+				};
+				elegend.addTo(map);
+			}
+			
+			function notifychange() {
+				map.removeControl(elegend);
+				map.eachLayer(function (e) {
+					if (e.options.pane =='overlayPane' && e.options.opacity =='1' ){
+						map.removeLayer(e)
+					}
+					
+				});
+				
+				var visparam = document.getElementById("visparam").value;
+				var forecast = document.getElementById("foreproduct").value;
+				var curdate = new Date(document.getElementById('seldate').value);
+				var prdate = moment(curdate).format('YYYY-MM-DD');
+				var strdate = moment(curdate).format('YYYYMMDD');
+				var imgdate = moment(curdate).format('MMM DD YYYY')
+				var floodbounds = [[5.608393, 92.1833333], [28.550060, 109.4666667]];
+				var currentbounds = [[0.05, 80.05], [40.05, 120.05]];
+				var antecedentbounds = [[0.05, 80.05], [40.05, 120.05]];
+			
+				if (visparam == "hazard"){
+					var flooddata = 'data/hazard/hazard_img_' + strdate + '.png';
+					var overlayLayer = L.imageOverlay(flooddata, floodbounds, {opacity: 1.0});
+					overlayLayer.addTo(map);
+					
+					map.fitBounds(floodbounds);
+					elegend.onAdd = function(map) {
+					var div = L.DomUtil.create('div', 'legend');
+					div.innerHTML += '<center><font size="2" color="black">Hazard Probability of <b>' + imgdate + '</b></font></center>';
+					div.innerHTML += '<img src="img/waterlevel.png" /><br>';
+					div.innerHTML += '<center><br>Based on Nowcast LHASA Mekong</center>';
+
+					return div;
+					};
+					elegend.addTo(map);
+				}
+				
+				else if (visparam == "exposure"){
+					var flooddata = 'data/hazard/hazard_img_' + strdate + '.png';
+					var overlayLayer = L.imageOverlay(flooddata, floodbounds, {opacity: 1.0});
+					overlayLayer.addTo(map);
+					
+					map.fitBounds(floodbounds);
+					elegend.onAdd = function(map) {
+					var div = L.DomUtil.create('div', 'legend');
+					div.innerHTML += '<center><font size="2" color="black">Hazard Probability of <b>' + imgdate + '</b></font></center>';
+					div.innerHTML += '<img src="img/waterlevel.png" /><br>';
+					div.innerHTML += '<center><br>Based on Nowcast LHASA Mekong</center>';
+
+					return div;
+					};
+					elegend.addTo(map);
+				}
+				else if (visparam=='current') {
+					if (map.hasLayer(overlayLayer) == true){
+						map.removeLayer(overlayLayer);
+					}
+					map.fitBounds(currentbounds);
+					d3.request('data/current/current.' + prdate + '.tif').responseType('arraybuffer').get(
+					function(error, tiffData) {
+						let lyr = L.ScalarField.fromGeoTIFF(tiffData.response, bandIndex = 0);
+
+						layerL1 = L.canvasLayer.scalarField(lyr, {
+							color: chroma.scale(['#d3d3d3', '#9494e0', '#5454ed', '#1515fb', '#001acc', '#00407f', '#006633', '#198400', '#668f00', '#b39a00', '#ffa500']).domain([0,1, 2, 5, 10, 20, 30, 40, 50, 75, 100]),
+							opacity: 1.0
+						});
+						layerL1.addTo(map);
+						layerL1.on('click', function(e) {
+							if (e.value !== null) {
+								let v = e.value.toFixed(1);
+								let html = ('<span class="popupText"> '+ 'Rain: ' + v + ' mm' + '</span>');
+								let popup = L.popup()
+									.setLatLng(e.latlng)
+									.setContent(html)
+									.openOn(map);
+							}
+						});
+					});
+
+					
+					elegend.onAdd = function(map) {
+					var div = L.DomUtil.create('div', 'legend');
+					div.innerHTML += '<center><font size="2" color="black">1 Day Precipitation (mm)</font></center>';
+					div.innerHTML += '<img src="img/precipitation2.png" /><br>';
+					div.innerHTML += '<center><b><br>' + imgdate + ' to ' + imgdate + '</b></center>';
+					return div;
+					};
+					elegend.addTo(map);
+				}
+					
+				else if (visparam=='antecedent') {
+					if (map.hasLayer(overlayLayer) == true){
+						map.removeLayer(overlayLayer);
+					}
+					map.fitBounds(floodbounds);
+					d3.request('data/antecedent/antecedent.web.' + prdate + '.tif').responseType('arraybuffer').get(
+					function(error, tiffData) {
+						let lyr = L.ScalarField.fromGeoTIFF(tiffData.response, bandIndex = 0);
+
+						layerL1 = L.canvasLayer.scalarField(lyr, {
+							color: chroma.scale(['#d3d3d3', '#9494e0', '#5454ed', '#1515fb', '#001acc', '#00407f', '#006633', '#198400', '#668f00', '#b39a00', '#ffa500']).domain([0,1, 2, 5, 10, 20, 30, 40, 50, 75, 100]),
+							opacity: 1.0
+						});
+						layerL1.addTo(map);
+						layerL1.on('click', function(e) {
+							if (e.value !== null) {
+								let v = e.value.toFixed(1);
+								let html = ('<span class="popupText"> '+ 'Rain: ' + v + ' mm' + '</span>');
+								let popup = L.popup()
+									.setLatLng(e.latlng)
+									.setContent(html)
+									.openOn(map);
+							}
+						});
+					});
+
+					
+					elegend.onAdd = function(map) {
+					var div = L.DomUtil.create('div', 'legend');
+					div.innerHTML += '<center><font size="2" color="black">Antecedent Precipitation (mm)</font></center>';
+					div.innerHTML += '<img src="img/precipitation2.png" /><br>';
+					div.innerHTML += '<center><b><br>' + imgdate + ' to ' + imgdate + '</b></center>';
+					return div;
+					};
+					elegend.addTo(map);
+				}				
+				else if (visparam == "sm"){
+					if (map.hasLayer(overlayLayer) == true){
+						map.removeLayer(overlayLayer);
+					}
+					map.fitBounds(floodbounds);
+					d3.request('data/sm/sm.web.' + prdate + '.tif').responseType('arraybuffer').get(
+					function(error, tiffData) {
+						let lyr = L.ScalarField.fromGeoTIFF(tiffData.response, bandIndex = 0);
+
+						layerL1 = L.canvasLayer.scalarField(lyr, {
+							color: chroma.scale(['#d3d3d3', '#9494e0', '#5454ed', '#1515fb', '#001acc', '#00407f', '#006633', '#198400', '#668f00', '#b39a00', '#ffa500']).domain([0,0.05,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0]),
+							opacity: 1.0
+						});
+						layerL1.addTo(map);
+						layerL1.on('click', function(e) {
+							if (e.value !== null) {
+								let v = e.value.toFixed(1);
+								let html = ('<span class="popupText"> '+ 'Soil Moisture: ' + v*100 + '%' + '</span>');
+								let popup = L.popup()
+									.setLatLng(e.latlng)
+									.setContent(html)
+									.openOn(map);
+							}
+						});
+					});
+
+
+					elegend.onAdd = function(map) {
+					var div = L.DomUtil.create('div', 'legend');
+					div.innerHTML += '<center><font size="2" color="black">Antecedent Soil Moisture</font></center>';;
+					div.innerHTML += '<img src="img/precipitation2.png" /><br>';
+					div.innerHTML += '<center><b><br>' + imgdate + ' to ' + imgdate + '</b></center>';
+					return div;
+					};
+					elegend.addTo(map);
+				}
+			}
+
+			
+			function downloaddata(){
+				var visparam = document.getElementById("visparam").value;
+				var forecast = document.getElementById("foreproduct").value;
+				var leadtime = document.getElementById("leadtime").value;
+				
+				if (visparam=='foreflood'){
+				  link = 'data/floodmap/' + forecast + '/f' + leadtime + '.PNG'
+				  tfile = 'floodmap.f' + leadtime + '.PNG'
+				  var link = document.createElement('a');
+				  link.style.display = 'none';
+				  document.body.appendChild(link);
+				  downloadUrl(link, tfile);
+				  document.body.removeChild(link);
+				}
+				else if (visparam=='wrfnebd'){
+				  link = 'data/precipitation/wrfnebd/f' + leadtime + '.tif'
+				  tfile = 'precipitation.wrf.nebd.f' + leadtime + '.tif'
+				  var link = document.createElement('a');
+				  link.style.display = 'none';
+				  document.body.appendChild(link);
+				  downloadUrl(link, tfile);
+				  document.body.removeChild(link);				  
+				}
+				else if (visparam=='wrfmeghna'){
+				  link = 'data/precipitation/wrfmeghna/f' + leadtime + '.tif'
+				  tfile = 'precipitation.wrf.meghna.f' + leadtime + '.tif'
+				  var link = document.createElement('a');
+				  link.style.display = 'none';
+				  document.body.appendChild(link);
+				  downloadUrl(link, tfile);
+				  document.body.removeChild(link);
+				}
+				else if (visparam=='ecmwf'){
+				  link = 'data/precipitation/ecmwf/f' + leadtime + '.tif'
+				  tfile = 'precipitation.ecmwf.meghna.f' + leadtime + '.tif'
+				  var link = document.createElement('a');
+				  link.style.display = 'none';
+				  document.body.appendChild(link);
+				  downloadUrl(link, tfile);
+				  document.body.removeChild(link);
+				}
+			}
+			function downloadUrl(url, filename) {
+			  let xhr = new XMLHttpRequest();
+			  xhr.open("GET", url, true);
+			  xhr.responseType = "blob";
+			  xhr.onload = function(e) {
+				if (this.status == 200) {
+				  const blob = this.response;
+				  const a = document.createElement("a");
+				  document.body.appendChild(a);
+				  const blobUrl = window.URL.createObjectURL(blob);
+				  a.href = blobUrl;
+				  a.download = filename;
+				  a.click();
+				  setTimeout(() => {
+					window.URL.revokeObjectURL(blobUrl);
+					document.body.removeChild(a);
+				  }, 0);
+				}
+			  };
+			  xhr.send();
+			}
+		</script>
+		<script>
+	  	  function playforward() {
+		    el = document.getElementById('seldate');
+		    var curdate = new Date(document.getElementById('seldate').value);
+		    curdate.setDate(curdate.getDate() + 2);
+		    var yyyy = curdate.getFullYear().toString();
+		    var mm = (curdate.getMonth() + 1).toString(); // getMonth() is zero-based
+		    var dd = curdate.getDate().toString();
+		    el.value = yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]);
+		    ev = document.createEvent('Event');
+		    ev.initEvent('change', true, false);
+		    el.dispatchEvent(ev);
+
+			/*var status = mapInit();
+			if (status == "datapresent") {
+				playtime = setTimeout(playforward, 500);
+				btforward.disabled = true;
+				btback.disabled = true;
+				btpause.disabled = false;
+			} else {
+				//document.getElementById("message").innerHTML = "Future data unavailable";
+				$(document).ready(function() {
+					$('#message').delay(2500).fadeOut();
+				});
+				btforward.disabled = false; //true;
+				btback.disabled = false;
+				btpause.disabled = true;
+			}*/
+		  }
+
+		  function playstop() {
+			clearTimeout(playtime);
+			btpause.disabled = true;
+			btforward.disabled = false;
+			btback.disabled = false;	
+  		  }
+
+		  function playback() {
+			el = document.getElementById('seldate');
+			var curdate = new Date(document.getElementById('seldate').value);
+			curdate.setDate(curdate.getDate());
+			var yyyy = curdate.getFullYear().toString();
+			var mm = (curdate.getMonth() + 1).toString(); // getMonth() is zero-based
+			var dd = curdate.getDate().toString();			
+			el.value = yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]);
+			ev = document.createEvent('Event');
+			ev.initEvent('change', true, false);
+			el.dispatchEvent(ev);
+			
+			/*var status = mapInit();
+			if (status == "datapresent") {
+				playtime = setTimeout(playback, 500);
+				btforward.disabled = true;
+				btback.disabled = true;
+				btpause.disabled = false;
+			} else {
+				//document.getElementById("message").innerHTML = "Previous data unavailable";
+				$(document).ready(function() {
+					$('#message').delay(2500).fadeOut();
+				});
+
+					btforward.disabled = false;
+					btback.disabled = false; //true;
+					btpause.disabled = true;
+			}*/
+
+
+		}
+		function decreaseDate() {
+			el = document.getElementById('seldate');
+
+			var curdate = new Date(document.getElementById('seldate').value);
+			curdate.setDate(curdate.getDate());
+			var yyyy = curdate.getFullYear().toString();
+			var mm = (curdate.getMonth() + 1).toString(); // getMonth() is zero-based
+			var dd = curdate.getDate().toString();
+			el.value = yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]);
+			ev = document.createEvent('Event');
+			ev.initEvent('change', true, false);
+			el.dispatchEvent(ev);
+		}
+
+		function increaseDate() {
+			el = document.getElementById('seldate');
+			var curdate = new Date(document.getElementById('seldate').value);
+			curdate.setDate(curdate.getDate() + 2);
+			var yyyy = curdate.getFullYear().toString();
+			var mm = (curdate.getMonth() + 1).toString(); // getMonth() is zero-based
+			var dd = curdate.getDate().toString();
+			el.value = yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]);
+			ev = document.createEvent('Event');
+			ev.initEvent('change', true, false);
+			el.dispatchEvent(ev);
+		  }
+		  
+		</script>
+	</body>
+</html>
