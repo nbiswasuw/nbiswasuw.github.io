@@ -215,7 +215,6 @@
 				var nameid = feature.properties.FID;
 				var content = '<iframe id="iframe" width="700" height="520" src="chart.html?adminid=&country=&nameid=" frameborder="0"></iframe>';
 				var popupContent = content.replace("adminid=", "adminid=" + adminid).replace("country=", "country=" + country).replace("nameid=", "nameid=" + nameid);
-				console.log(popupContent)
 				layer.bindPopup(popupContent);
 			  }
 			});
