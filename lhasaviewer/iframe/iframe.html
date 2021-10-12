@@ -293,7 +293,7 @@
 				var strdate = moment(curdate).format('YYYYMMDD');
 				var imgdate = moment(curdate).format('MMM DD YYYY 06:00')
 					
-				var flooddata = 'data/hazard/hazard_img_' + strdate + '.png';
+				var flooddata = '../../blob/master/lhasaviewer/iframe/data/hazard/hazard_img_' + strdate + '.png';
 				var floodbounds = [[5.208393, 92.1833], [28.550060, 109.4666667]];
 				var overlayLayer = L.imageOverlay(flooddata, floodbounds, {opacity: 1.0});
 				overlayLayer.addTo(map);
