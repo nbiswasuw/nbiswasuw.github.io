@@ -328,7 +328,7 @@
 				var antecedentbounds = [[0.05, 80.05], [40.05, 120.05]];
 			
 				if (visparam == "hazard"){
-					var flooddata = 'data/hazard/hazard_img_' + strdate + '.png';
+					var flooddata = '../../blob/master/lhasaviewer/iframe/data/hazard/hazard_img_' + strdate + '.png';
 					var overlayLayer = L.imageOverlay(flooddata, floodbounds, {opacity: 1.0});
 					overlayLayer.addTo(map);
 					
@@ -345,7 +345,7 @@
 				}
 				
 				else if (visparam == "exposure"){
-					var flooddata = 'data/hazard/hazard_img_' + strdate + '.png';
+					var flooddata = '../../blob/master/lhasaviewer/iframe/data/hazard/hazard_img_' + strdate + '.png';
 					var overlayLayer = L.imageOverlay(flooddata, floodbounds, {opacity: 1.0});
 					overlayLayer.addTo(map);
 					
