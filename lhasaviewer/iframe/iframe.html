@@ -328,7 +328,7 @@
 				var antecedentbounds = [[0.05, 80.05], [40.05, 120.05]];
 			
 				if (visparam == "hazard"){
-					var flooddata = '../../blob/master/lhasaviewer/iframe/data/hazard/hazard_img_' + strdate + '.png';
+					var flooddata = 'https://nbiswasuw.github.io/blob/master/lhasaviewer/iframe/data/hazard/hazard_img_' + strdate + '.png';
 					var overlayLayer = L.imageOverlay(flooddata, floodbounds, {opacity: 1.0});
 					overlayLayer.addTo(map);
 					
@@ -345,7 +345,7 @@
 				}
 				
 				else if (visparam == "exposure"){
-					var flooddata = '../../blob/master/lhasaviewer/iframe/data/hazard/hazard_img_' + strdate + '.png';
+					var flooddata = 'https://nbiswasuw.github.io/blob/master/lhasaviewer/iframe/data/hazard/hazard_img_' + strdate + '.png';
 					var overlayLayer = L.imageOverlay(flooddata, floodbounds, {opacity: 1.0});
 					overlayLayer.addTo(map);
 					
@@ -365,7 +365,7 @@
 						map.removeLayer(overlayLayer);
 					}
 					map.fitBounds(currentbounds);
-					d3.request('data/current/current.' + prdate + '.tif').responseType('arraybuffer').get(
+					d3.request('https://nbiswasuw.github.io/data/current/current.' + prdate + '.tif').responseType('arraybuffer').get(
 					function(error, tiffData) {
 						let lyr = L.ScalarField.fromGeoTIFF(tiffData.response, bandIndex = 0);
 
@@ -402,7 +402,7 @@
 						map.removeLayer(overlayLayer);
 					}
 					map.fitBounds(floodbounds);
-					d3.request('data/antecedent/antecedent.web.' + prdate + '.tif').responseType('arraybuffer').get(
+					d3.request('https://nbiswasuw.github.io/data/antecedent/antecedent.web.' + prdate + '.tif').responseType('arraybuffer').get(
 					function(error, tiffData) {
 						let lyr = L.ScalarField.fromGeoTIFF(tiffData.response, bandIndex = 0);
 
@@ -438,7 +438,7 @@
 						map.removeLayer(overlayLayer);
 					}
 					map.fitBounds(floodbounds);
-					d3.request('data/sm/sm.web.' + prdate + '.tif').responseType('arraybuffer').get(
+					d3.request('https://nbiswasuw.github.io/data/sm/sm.web.' + prdate + '.tif').responseType('arraybuffer').get(
 					function(error, tiffData) {
 						let lyr = L.ScalarField.fromGeoTIFF(tiffData.response, bandIndex = 0);
 
