@@ -1,0 +1,9 @@
+Last data of RAT update: 10/01/2020
+Available inflow data: 
+Last date of inflow update: 
+Available storgae change data: 
+Last date of storage change: 
+Available surface area data: 
+Last date of surface area update: 
+Available outflow data: 
+Last date of outflow update: 
