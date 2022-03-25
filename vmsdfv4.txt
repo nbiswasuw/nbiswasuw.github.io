@@ -1,0 +1,21 @@
+1. Training was useful
+2. DMR some challenges to understand GEE
+3. They want to use their susceptibility but it is difficult for them to define the threshold 
+4. They are interested to implement it in GEE, might need some technical help (Nishan mentioned that their is ADPC and SIG Team)
+	Thomas also mentioned the trade-off of decising a particular threshold
+5. They will work on AP model to define the threshold and then will be tuning lhasa v1
+6. They were asking if local precipitation can be used?
+7. There will be a comparison between AP model and LHASA v1
+8. Then they can decide if they will focus on LHASA version 1
+9. They become more familiar with LHASA version 1 and google earth engine
+10. 
+
+
+
+11. They will use GPM IMERG precipitation
+12. Will change susceptibility maps
+13. Will work on defining the threshold of susceptibility map from AP model
+14. Option 1: they will buy their own server
+	Option 2: Will stick to the earth engine app
+	Option 3: ADPC wil host the app and they will use
+		
