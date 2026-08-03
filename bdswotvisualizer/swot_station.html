@@ -1,0 +1,190 @@
+<html>
+
+<!--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ // Timeseries plotting of Basin average parameters
+ // Written by Nishan Kumar Biswas
+ // PhD Student and Graduate Research Assistant
+ // Department of CEE, University of Washington
+ // nbiswas@uw.edu, nishan.wre.buet@gmail.com
+ // www.students.washington.edu/nbiswas
+
+-->
+
+<head>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script>
+    function getParamValue(paramName) {
+        var url = window.location.search.substring(1); //get rid of "?" in querystring
+        var qArray = url.split('&'); //get key-value pairs
+        for (var i = 0; i < qArray.length; i++) {
+            var pArr = qArray[i].split('='); //split key and value
+            if (pArr[0] == paramName)
+                return pArr[1]; //return value
+        }
+    }
+	function zfill(num, len) {
+	return (Array(len).join("0") + num).slice(-len);}
+</script>
+
+
+<script type="text/javascript">
+ var station = getParamValue("reach_id");
+
+
+function retrievecsv()
+{
+	dataset = '';
+	// AJAX in the data file
+    $.ajax({
+        type: "GET",
+        url: "data/flag_wse/" + station  + "_flag.csv",
+		async: false,
+        dataType: "text",
+        success: function(data)
+		{
+		  dataset=String(data);
+		}
+        });
+		return dataset;
+}
+
+
+function load()
+{
+	var allData = [];
+	var goodData = [];
+	var mediumData = [];
+	var badData = [];
+
+	csvdata = retrievecsv();
+	lines = csvdata.split('\n');
+
+	for (i = 1; i < lines.length; i++) {
+		var items = lines[i].split(',');
+		var t = new Date(items[0]).getTime();
+		var wse = +items[1];
+		var flag = +items[2];
+
+		allData.push([t, wse])
+		
+		if (flag === 0) {
+			goodData.push([t, wse]);
+		} else if (flag === 1) {
+			mediumData.push([t, wse]);
+		} else if (flag === 2) {
+			badData.push([t, wse]);
+		}
+	}
+	Highcharts.setOptions({
+		global: {
+			useUTC: false
+		}
+	});
+	var chart = Highcharts.chart('container', {
+	chart: {
+			zoomType: 'x',
+			panning: true,
+			panKey: 'shift'
+		},
+	title: {
+	  text: "SWOT Height"
+	},
+	xAxis: {
+	  type: 'datetime'
+	},
+	yAxis: {
+	  title: {
+		text: 'Water Height (m)'
+	  },
+	  labels: {
+        format: '{value:.2f}'
+	  },
+	  minTickInterval: 0.01
+	},
+	tooltip: {
+		xDateFormat: '%d-%m-%Y',
+	  crosshairs: true,
+	  shared: true,
+	  valueSuffix: " m"
+	},
+	legend: {},
+	series: [
+	{
+		name: 'SWOT-All',
+		data: allData,
+		type: 'spline',
+		color: 'black',   // dark blue
+		zIndex: 3,
+		marker: { enabled: false }
+	},
+	{
+		name: 'SWOT (Good)',
+		data: goodData,
+		type: 'scatter',
+		color: '#003f7f',   // dark blue
+		zIndex: 3,
+		marker: { enabled: true,
+ 		    symbol: 'circle'
+		}
+	},
+	{
+		name: 'SWOT (Degraded)',
+		data: mediumData,
+		type: 'scatter',
+		color: '#4f83cc',   // medium blue
+		zIndex: 2,
+		marker: { enabled: true,
+ 		    symbol: 'triangle'
+		}
+	},
+	{
+		name: 'SWOT (Bad)',
+		data: badData,
+		type: 'scatter',
+		color: '#a6c8ff',   // light blue
+		zIndex: 1,
+		marker: { 
+			enabled: true,
+ 		    symbol: 'triangle-down'
+		}
+	}
+	]
+	});
+
+}
+</script>
+<style>
+.selector {
+	position: absolute;
+	right: 20px;
+	top: 368px;
+}
+.errormessage {
+	position: absolute;
+	width:200px;
+	left:50%;
+	margin-left:-100px;
+	top: 60px;
+    color: red;
+    padding: 20px;
+    font-size: 20px;
+    border: 2px;
+    cursor: pointer;
+}
+.selectyear {
+    background-color: #444244;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px;
+    cursor: pointer;
+}
+
+</style>
+</head>
+<body onload="load()">
+<div id="container" style="width: 100%; height: 400px; margin: 0 auto"></div>
+</body>

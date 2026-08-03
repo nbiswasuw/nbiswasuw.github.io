@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bangladesh SWOT-based Water Monitoring Framework</title>
+
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="css/skel.css" />
+		<link rel="stylesheet" href="css/style.css" />
+
+		<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" type="text/css">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
+		<link rel="stylesheet" href="https://rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css"/>
+		<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+		<script src="js/jquery.min.js"></script>
+
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>			
+		 <link rel="stylesheet" href="css/leaflet.fullscreen.css" />
+		 <script src="js/Leaflet.fullscreen.js"></script>
+		
+		<style>
+		html, body {
+			height: 700px;
+			margin: 0;
+		}
+		#map {
+			width: 100%;
+			height: 700px;
+		}
+
+		
+		.legend {
+			line-height: 18px;
+			color: #333333;
+			font-family: 'Open Sans', Helvetica, sans-serif;
+			padding: 6px 8px;
+			background: white;
+			background: rgba(255, 255, 255, 0.8);
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+			border-radius: 5px;
+		}
+
+		.legend i {
+			width: 18px;
+			height: 18px;
+			float: left;
+			margin-right: 8px;
+			opacity: 0.7;
+		}
+
+		.legend img {
+			width: 220px;
+			height: auto;
+			float: left;
+		}
+
+		.legend p {
+			font-size: 12px;
+			line-height: 18px;
+			margin: 0;
+		}
+		</style>
+		
+	</head>
+	<body>
+			<!-- Main -->
+		<section id="main" class="wrapper" style="padding: 0em 0em 0em">
+				<div id='map'></div>
+		</section>
+		
+		<script src="js/ffwc.geojson"></script>
+		<script src="js/gbm_reaches.geojson"></script>
+		<script src="js/records_points.geojson"></script>
+		<script src="js/bangladesh_bnd.geojson"></script>
+
+		<script src="js/validation_40.geojson"></script>
+		<script src="js/rivernetwork.json"></script>
+		<script src="js/stationlocation.json"></script>
+		<script src="js/crawlstations.json"></script>
+		<script src="js/leaflet-panel-layers.js"></script>
+		<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+		<script src="js/slidercontrol.js"></script>
+		<script src="https://momentjs.com/downloads/moment.min.js"></script>
+
+		<script>
+			// A helper function to map a number to a blue shade
+			function getColor(value) {
+				// Adjust the min/max to fit your data range
+				var min = 20;
+				var max = 150;  
+				
+				// Clamp value
+				var v = Math.max(min, Math.min(max, value));
+				
+				// Compute intensity between 0 and 1
+				var t = (v - min) / (max - min);
+				
+				// Interpolate between light blue (low) and deep blue (high)
+				// Light blue: rgb(173, 216, 230)  (#ADD8E6)
+				// Deep blue:  rgb(0,   0,   139)  (#00008B)
+				var r = Math.round(100 + t * (0 - 100));
+				var g = Math.round(180 + t * (0 - 180));
+				var b = Math.round(230 + t * (139 - 230));
+				
+				return "rgb(" + r + "," + g + "," + b + ")";
+			}
+			
+			// Defining forecast station locations
+			var swotMarkeroptns = {
+				radius: 5,
+				fillColor: "#ff7800",
+				color: "#000",
+				weight: 1,
+				opacity: 1,
+				fillOpacity: 0.8
+			};
+			
+			var altimpass = L.geoJSON(swotstations, {
+				pointToLayer: function (feature, latlng) {
+				var val = feature.properties.records; // <-- replace with your numeric property name
+				return L.circleMarker(latlng, 
+				{
+					radius: 3,
+					fillColor: getColor(val),
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8
+				});
+            	},
+				onEachFeature: function (feature, layer) {
+				var stationid = feature.properties.reach_id;
+				layer.bindTooltip("River: " + feature.properties.river_name + ", SWOT Records: " + feature.properties.records);
+				var content = '<iframe id="ts_wa" width="700" height="420" src="swot_station.html?reach_id=" frameborder="0"></iframe>';
+				var popupContent = content.replace("reach_id=", "reach_id=" + stationid);
+				layer.bindPopup(popupContent);
+				}
+			});
+			
+			var rivstyle = {"color": "#4262f4", "weight": 2, "opacity": 0.65};
+			var rivers = L.geoJSON(swordreach, {
+				style: rivstyle,
+				onEachFeature: function (feature, layer) {
+				layer.bindTooltip(feature.properties.river_name + " River");
+				var stationid = feature.properties.reach_id;
+				var content = '<iframe id="ts_wa" width="700" height="420" src="swot_station.html?reach_id=" frameborder="0"></iframe>';
+				var popupContent = content.replace("reach_id=", "reach_id=" + stationid);
+				layer.bindPopup(popupContent);
+
+				}
+			});
+			
+			var bndstyle = {"color": "#4262f4", "weight": 1, "opacity": 0.65};
+			var bdbnd = L.geoJSON(bd_bnd, {
+				style: bndstyle,
+				onEachFeature: function (feature, layer) {
+				layer.bindTooltip( "Bangladesh Boundary");
+				}
+			});
+			
+			
+			// Defining forecast station locations
+			var geojsonMarkerOptions = {
+				radius: 5,
+				fillColor: "#ff7800",
+				color: "#000",
+				weight: 1,
+				opacity: 1,
+				fillOpacity: 0.8
+			};
+			
+			var stationlocations = L.geoJSON(validation_stations, {
+				pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, geojsonMarkerOptions);
+            	},
+				onEachFeature: function (feature, layer) {
+				var stationid = feature.properties.reach_id;
+				var bwdbstid = feature.properties.Station_ID;
+				layer.bindTooltip("Station: " + feature.properties.Station_ID);
+				var content = '<iframe id="ts_wa" width="700" height="420" src="swot_comparison.html?stationid=&bwdbid=" frameborder="0"></iframe>';
+				var popupContent = content.replace("stationid=", "stationid=" + stationid).replace("bwdbid=", "bwdbid=" + bwdbstid);
+				layer.bindPopup(popupContent);
+			  }
+			});
+			
+						
+			var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}', {
+				attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+				subdomains: 'abcd',
+				minZoom: 0,
+				maxZoom: 18,
+				ext: 'png'
+			});
+			
+			var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+				attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+			});
+			
+			var Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+				attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+				maxZoom: 16
+			});
+			var Thunderforest_Landscape = L.tileLayer('https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=33cde94253dc46b0a4945dd1b82ec5c6', {
+				attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+				apikey: '<your apikey>',
+				maxZoom: 22
+			});
+			var map = L.map('map', {
+				center: [24.074532, 88.571421],
+				zoom: 7,
+				layers: [Esri_NatGeoWorldMap,bdbnd, altimpass, stationlocations],
+				zoomControl: false
+			});
+			
+			var baseLayers = {
+				"Terrain Map":Stamen_Terrain,
+				"Imagery Map":Esri_WorldImagery,
+				"Geo Map":Esri_NatGeoWorldMap,
+				"Landscape Map": Thunderforest_Landscape
+			};
+
+			var overlays = {
+				"Validation Stations": stationlocations,
+				"SWOT Observations": altimpass,
+				"SWORD River Network":rivers,
+				"Bangladesh Map": bdbnd
+			};
+
+			L.control.layers(baseLayers,{}, {position: "bottomright"}).addTo(map);
+			L.control.layers({},overlays, {
+				position: 'topright',
+				collapsed: false
+			}).addTo(map);
+			
+			var scale = L.control.scale({
+				position:'bottomleft'
+			}).addTo(map);
+			
+			var elegend = L.control({
+				position: 'topleft'
+			});
+			
+		</script>
+	</body>
+</html>
