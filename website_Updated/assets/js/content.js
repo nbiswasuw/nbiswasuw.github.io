@@ -222,25 +222,31 @@ window.SITE_CONTENT = {
       "title": "HydroTelliSense",
       "summary": "A collaborative research initiative combining satellite remote sensing, hydrologic modeling, and machine intelligence to support water management and early warning of hydroclimatic hazards in Bangladesh. Explore the team, research portfolio, and publications.",
       "url": "https://hydrotellisense.github.io/",
-      "image": "",
+      "image": "images/screenshots/hydrotellisense.jpg",
       "linkLabel": "Visit website",
-      "status": "Research initiative"
+      "status": "Research initiative",
+      "screenshot": true,
+      "imageAlt": "HydroTelliSense website screenshot"
     },
     {
       "title": "Bangladesh SWOT Visualizer",
       "summary": "A web-based water monitoring dashboard for Bangladesh using observations from the Surface Water and Ocean Topography (SWOT) satellite mission. Explore the dashboard to view satellite-based water information.",
       "url": "https://smita27du.github.io/bdswotvisualizer/",
-      "image": "",
+      "image": "images/screenshots/bdswot.jpg",
       "linkLabel": "Visit website",
-      "status": "Interactive research tool"
+      "status": "Interactive research tool",
+      "screenshot": true,
+      "imageAlt": "Bangladesh SWOT Visualizer website screenshot"
     },
     {
       "title": "RIQSA — Reservoir Impact Quantification in South Asia",
       "summary": "An interactive atlas for exploring reservoir storage, catchments, upstream drainage, and downstream river connections across major South and Southeast Asian basins. Trace how upstream reservoir storage changes affect downstream water availability across seasons.",
       "url": "https://hydrotellisense.github.io/riqsa/",
-      "image": "",
+      "image": "images/screenshots/riqsa.jpg",
       "linkLabel": "Visit website",
-      "status": "Interactive research tool"
+      "status": "Interactive research tool",
+      "screenshot": true,
+      "imageAlt": "RIQSA — Reservoir Impact Quantification in South Asia website screenshot"
     },
     {
       "title": "Landslide Hazard Assessment for Situational Awareness",
@@ -313,6 +319,16 @@ window.SITE_CONTENT = {
       "summary": "Developed automated satellite and weather-data processing workflows to support irrigation advisories for farmers in Pakistan.",
       "linkLabel": "Project reference",
       "status": "Research & development contribution"
+    },
+    {
+      "title": "Satellite-based landslide mapping — Colombia",
+      "summary": "Mapping landslides in Cali and Colombia’s Cauca Valley using multi-temporal satellite imagery, U-Net, and NASA’s Prithvi geospatial foundation model, with comparison against the SALaD mapping system. The work supports landslide inventories and assessment of risks to communities and essential infrastructure.",
+      "url": "https://hydrotellisense.github.io/#portfolio",
+      "image": "",
+      "imagePlaceholder": true,
+      "imageAlt": "Colombia landslide mapping screenshot",
+      "status": "Landslide mapping · Colombia",
+      "linkLabel": "Research overview"
     }
   ],
   "publications": [
@@ -338,7 +354,8 @@ window.SITE_CONTENT = {
       "number": 26,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -361,7 +378,8 @@ window.SITE_CONTENT = {
       "number": 24,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -464,7 +482,8 @@ window.SITE_CONTENT = {
       "number": 15,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -555,7 +574,8 @@ window.SITE_CONTENT = {
       "title": "A computationally efficient flashflood early warning system for a mountainous and transboundary river basin in Bangladesh",
       "number": 7,
       "categories": [
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -589,7 +609,8 @@ window.SITE_CONTENT = {
       "title": "When floods cross borders, satellite data can help, Eos, 100",
       "number": 4,
       "categories": [
-        "Remote Sensing"
+        "Remote Sensing",
+        "Natural Hazards"
       ]
     },
     {
@@ -704,7 +725,8 @@ window.SITE_CONTENT = {
       "number": 27,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -715,7 +737,8 @@ window.SITE_CONTENT = {
       "title": "Spatiotemporal Variability Analysis of Precipitation and Surface Water Extent in Bangladesh using Google Earth Engine: Implications for Flood Risk Management",
       "number": 26,
       "categories": [
-        "Remote Sensing"
+        "Remote Sensing",
+        "Natural Hazards"
       ]
     },
     {
@@ -774,7 +797,8 @@ window.SITE_CONTENT = {
       "number": 21,
       "categories": [
         "Modelling",
-        "Climate Change"
+        "Climate Change",
+        "Natural Hazards"
       ]
     },
     {
@@ -819,7 +843,8 @@ window.SITE_CONTENT = {
       "title": "Developing an efficient globally applicable flood mapping framework using SWAT and HAND",
       "number": 17,
       "categories": [
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -842,7 +867,8 @@ window.SITE_CONTENT = {
       "number": 15,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -865,7 +891,8 @@ window.SITE_CONTENT = {
       "number": 13,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -888,7 +915,8 @@ window.SITE_CONTENT = {
       "number": 11,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -900,7 +928,8 @@ window.SITE_CONTENT = {
       "number": 10,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -912,7 +941,8 @@ window.SITE_CONTENT = {
       "number": 9,
       "categories": [
         "Modelling",
-        "Climate Change"
+        "Climate Change",
+        "Natural Hazards"
       ]
     },
     {
@@ -924,7 +954,8 @@ window.SITE_CONTENT = {
       "number": 8,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -936,7 +967,8 @@ window.SITE_CONTENT = {
       "number": 7,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -948,7 +980,8 @@ window.SITE_CONTENT = {
       "number": 6,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -959,7 +992,8 @@ window.SITE_CONTENT = {
       "title": "Using remotely sensed information to support landslide hazard and exposure assessment throughout the disaster lifecycle",
       "number": 5,
       "categories": [
-        "Remote Sensing"
+        "Remote Sensing",
+        "Natural Hazards"
       ]
     },
     {
@@ -971,7 +1005,8 @@ window.SITE_CONTENT = {
       "number": 4,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -995,7 +1030,8 @@ window.SITE_CONTENT = {
       "number": 2,
       "categories": [
         "Remote Sensing",
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     },
     {
@@ -1018,13 +1054,15 @@ window.SITE_CONTENT = {
       "title": "Application of mathematical models to improve flood control, drainage, and irrigation facilities Shariatpur district, Bangladesh. 5th International Conference on Water & Flood Management 6-8 March 2015, IWFM, BUET, Bangladesh",
       "number": 1,
       "categories": [
-        "Modelling"
+        "Modelling",
+        "Natural Hazards"
       ]
     }
   ],
   "innovations": [
     "https://hydrotellisense.github.io/",
-    "https://hydrotellisense.github.io/riqsa/"
+    "https://hydrotellisense.github.io/riqsa/",
+    "https://hydrotellisense.github.io/#portfolio"
   ],
   "settings": {
     "newsSlideLimit": 10
@@ -1102,5 +1140,95 @@ window.SITE_CONTENT = {
       "summary": "Professional involvement has included the American Society of Civil Engineers, American Geophysical Union, and American Meteorological Society.",
       "url": ""
     }
-  ]
+  ],
+  "publicationCategories": [
+    "Remote Sensing",
+    "Modelling",
+    "AI and ML",
+    "Climate Change",
+    "Natural Hazards"
+  ],
+  "gallery": [
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    },
+    {
+      "image": "",
+      "caption": ""
+    }
+  ],
+  "funding": []
 };

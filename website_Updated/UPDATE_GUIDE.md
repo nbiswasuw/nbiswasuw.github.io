@@ -1,60 +1,86 @@
 # Updating your website
 
-Open `index.html` to preview. No installation, build step, or backend is needed.
-Upload the contents of this folder to your existing hosting location. Keep your existing resume PDFs beside index.html; PDFs were not supplied in this request.
+Extract this folder and open **index.html** to preview. Upload its contents to your existing hosting location. No build step or backend is required. Keep your existing resume PDFs beside index.html; they were not supplied with this update.
 
-## One file for routine updates
+## Your content file
 
-Edit **assets/js/content.js**. It contains four labeled lists: `news`, `collaborators`, `projects`, and `publications`. Each item is a small block of text. Copy an existing block, change its values, and keep the commas between blocks. Use double quotes around strings; escape a quotation mark inside text as `\"`.
+Routine changes go in **assets/js/content.js**. Copy an existing item, edit its fields, and retain the commas between items. Keep text inside double quotes; escape quotation marks within a string as `\"`.
 
-- News: edit `date`, `category`, `title`, `description`, `image`, and `url`. Put newest entries first. The first ten appear as slides with circles; all appear on news.html. Empty image or URL values are allowed. Visitors can use circles, arrows, or Play/Pause.
-- Collaborators: edit `name`, `logo`, and optional `url`. Add logos to images/collaborators/.
-- Projects: edit `title`, `summary`, `image`, and `url`. These appear above the original detailed experience section.
-- Publications: edit `title`, `citation`, `summary`, `url`, and `group`. The group must be one of `Journal articles & published work`, `Other publications`, or `Conferences & presentations`. Add new items near the top of the appropriate group.
+| Content | Where to edit | What to change |
+| --- | --- | --- |
+| Latest updates | `news` | date, category, title, description, image, url. Put newest first. |
+| Number of update slides | `settings.newsSlideLimit` | Currently 10. |
+| Research story | `researchStory` | One string per paragraph. |
+| Latest innovations | `innovations` | URLs of the entries to feature from `projects`. |
+| Projects, Tools & Frameworks | `projects` | title, summary, image, url, status, linkLabel. |
+| Publications | `publications` | number, title, citation, summary, url, group, categories. |
+| Experience | `experience` | title and summary. |
+| Service & Engagement | `services` | title, summary, optional url. |
+| Collaborators | `collaborators` | name, logo, optional url. |
+| Funding | `funding` | Add the records described below. |
+| Photo gallery | `gallery` | image and caption for each slot. |
 
-Example news item (insert inside the news list):
+The original Scope One font is restored. Appearance overrides are in **assets/css/refresh.css**; the original template and background-image rules remain in **assets/css/main.css**. Rendering and carousel controls are in **assets/js/refresh.js**.
+
+## Screenshots and the Colombia placeholder
+
+HydroTelliSense, RIQSA, and the Bangladesh SWOT Visualizer use screenshots in **images/screenshots/**. Each screenshot links to its project's website. Set `screenshot: true` to show a complete screenshot without cropping it.
+
+The Colombia landslide-mapping entry has `image: ""` and `imagePlaceholder: true`. To fill its reserved space, put your screenshot in images/screenshots/ and change just that entry's image path, for example:
 
 ```javascript
-{
-  "date": "2026-11-07",
-  "category": "Talk",
-  "title": "Your presentation title",
-  "description": "One or two sentences about the presentation.",
-  "image": "images/your-photo.jpg",
-  "url": "https://example.org/your-event"
-},
+"image": "images/screenshots/colombia-landslides.jpg",
+"screenshot": true,
+"imagePlaceholder": true
 ```
 
-## Appearance
+The same project record supplies both its innovation card and its tools-section card.
 
-Edit the color values at the beginning of **assets/css/refresh.css**. Original template styles and background images remain in assets/css/main.css. **assets/js/refresh.js** handles rendering; routine updates do not require editing it.
+## Publication categories and numbering
 
-## Content notes
-
-All original publications and conference citations were retained, including the duplicated Digital Twins citation already in the source. Publication summaries are conservative draft descriptions based on the supplied titles; review them for scientific nuance. Older news remains in the archive, while 2026 publication highlights come from the supplied homepage. No new talks, visits, or institutional partnerships were invented. Existing external links and time-sensitive biography statements have not been independently checked.
-
-The publication HTML contains a static initial fallback. With JavaScript enabled, content.js is authoritative. If you require a fully current no-JavaScript publication list, update that HTML fallback as well.
-
-HydroTelliSense, Bangladesh SWOT Visualizer, and RIQSA appear first in the project overview. Their titles, descriptions, and links can be edited in the same projects list.
-
-## Expanded sections and publication filters
-
-All routine content remains in assets/js/content.js:
-
-- `researchStory`: paragraphs for the general research narrative.
-- `innovations`: URLs of entries in `projects` to feature near the research story. Keep HydroTelliSense and RIQSA here, or replace the URLs to change the highlights.
-- `projects`: the single combined list for Projects, Tools & Frameworks, including historical contributions. Edit `status`, `summary`, and `linkLabel` without claiming a legacy system is still operational.
-- `experience`: brief role and contribution summaries, separate from the project portfolio.
-- `services`: editorial work, peer review, training, mentoring, open science, assessment contributions, outreach, and professional societies.
-- `settings.newsSlideLimit`: 10. Increase or decrease this number to change the carousel length.
-
-Each publication now has a numeric `number` and a `categories` list. Keep the number out of the `citation` text: it is displayed automatically in the bold linked title. The number stays fixed when filtering. Original numbering is retained separately within the publication and conference groups.
-
-Allowed category labels are exactly `Remote Sensing`, `Modelling`, `AI and ML`, and `Climate Change`. A paper may have several labels, for example:
+Use one or more exact category labels: **Remote Sensing**, **Modelling**, **AI and ML**, **Climate Change**, **Natural Hazards**. Flood, flash flood, and landslide papers are included in Natural Hazards. These are editable thematic classifications, and an entry can belong to several topics.
 
 ```javascript
 "number": 28,
-"categories": ["Remote Sensing", "AI and ML"]
+"categories": ["Remote Sensing", "Natural Hazards"]
 ```
 
-The category buttons filter entries while retaining their publication/conference grouping. All restores the complete list. Topic labels are editorial classifications based on the supplied titles and descriptions; refine them as you review the papers.
+Keep the number out of `citation`: it appears automatically in the bold title and stays fixed when filtering. Original numbering is retained within the publication/conference groups. `group` must be one of `Journal articles & published work`, `Other publications`, or `Conferences & presentations`.
+
+The HTML includes an initial static publication fallback. With JavaScript enabled, content.js is authoritative. Update the HTML fallback too if you need it to mirror later changes without JavaScript.
+
+## Photo gallery: 20 ready-to-fill slots
+
+The gallery is the last section, immediately after collaborators. Each of its 20 slots starts with an empty image and caption, so no sample photograph is mistaken for your work. Fill each record like this:
+
+```javascript
+{
+  "image": "images/gallery/my-photo-01.jpg",
+  "caption": "Your description of the event, people, place, or activity."
+}
+```
+
+Create **images/gallery/** and add your photographs there. Remove unused empty records if you want only 15 photos. Copy a record to add more than 20. The arrows, circle selectors, counter, and Play/Pause controls adjust automatically. Captions appear below the image. Landscape and portrait images are shown in full.
+
+## Funding: ready for your details
+
+The section is intentionally empty. Replace `funding: []` with records such as the following (replace every example value with your actual details):
+
+```javascript
+"funding": [
+  {
+    "title": "Project or award title",
+    "sponsor": "Funding organization",
+    "period": "2026–2028",
+    "role": "Your role",
+    "summary": "Brief description of the funded work.",
+    "url": "https://example.org/award"
+  }
+]
+```
+
+Leave optional values blank to omit them. No funding awards or amounts have been invented.
+
+## Content notes
+
+Publication summaries are draft scope descriptions based on your supplied titles. Review them for scientific nuance. The duplicated Digital Twins citation from your original source has been retained. Older tools are described as research and development contributions without claiming that they are still operational. Time-sensitive biography statements and existing external links have not all been independently rechecked.
