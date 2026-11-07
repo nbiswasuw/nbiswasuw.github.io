@@ -1150,44 +1150,44 @@ window.SITE_CONTENT = {
   ],
   "gallery": [
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/agu_25.jpeg",
+      "caption": "AGU 2025 in New Orleans, Louisiana, USA"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/agu_25_2.jpeg",
+      "caption": "AGU 2025 in New Orleans, Louisiana, USA"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/arin_anin_2026.jpg",
+      "caption": "My two kids at NASA Goddard, they love NASA more than me!"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/nishan_2017.jpg",
+      "caption": "My very first day at NASA Goddard as an intern, June 2017"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/nishan_nasa_2024.jpg",
+      "caption": "I hosted a talk on landslides at NASA Goddard in 2024 featuring Dr. Bayes Ahmed from UK"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/nishan_ju_2023.jpg",
+      "caption": "During an invited talk at Jahangirnagar University, Bangladesh in 2023"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/nishan_jpl_2023.jpg",
+      "caption": "Attended a meeting on behalf of NASA Goddard with CNES, France on Earth system digital twins at NASA JPL in 2023"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/nishan_gsfc_award.jpeg",
+      "caption": "NASA HBG Annual Peer Award 2022 for Science/Technical support"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/nishan_2023_bangladesh.jpeg",
+      "caption": "Attended a workshop organized by IPWE and IWFM, BUET on water resources management in Bangladesh in 2023"
     },
     {
-      "image": "",
-      "caption": ""
+      "image": "images/collections/nishan_2023_bangladesh_2.jpeg",
+      "caption": "Participants of the workshop on water resources management in Bangladesh in 2023"
     },
     {
       "image": "",
